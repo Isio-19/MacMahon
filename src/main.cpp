@@ -3,22 +3,26 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <filesystem>
 
 int main (int argc, char* args[]) {
     std::chrono::high_resolution_clock::time_point start;
     std::chrono::high_resolution_clock::time_point end;    
     std::chrono::duration<double, std::milli> duration;
     
-    std::string path = "../";
-    std::string Boards[4] = {
-        path+"grids/4x4.txt", 
-        path+"grids/5x5.txt", 
-        path+"grids/6x4.txt", 
-        path+"grids/6x6.txt"
-    };
+    
+    std::string path = "../grids/";
+    std::vector<std::string> Boards;
+    // Boards array
+    for (auto entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_directory())
+            continue;
+
+        Boards.push_back(entry.path());
+    }
 
     for (std::string board : Boards) {
-        Board currentBoard(board);
+        Board currentBoard(path+board);
         bool solutionNotFound = false;
 
         start = std::chrono::high_resolution_clock::now();
