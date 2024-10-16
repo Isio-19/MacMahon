@@ -16,7 +16,9 @@ Made by Jérôme CHEN (Isio 19)
 ## Usage
 
 MacMahon boards are stored in the `grids` directory. 
+
 The `grids` files are made of tiles with one tile per line where a tile is `left_color top_color right_color bottom_color`. 
+
 The side color of a tile can be either:
 - Red (R)
 - Green (G)
