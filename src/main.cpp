@@ -10,17 +10,6 @@ int main (int argc, char* args[]) {
     std::chrono::high_resolution_clock::time_point end;    
     std::chrono::duration<double, std::milli> duration;
     
-    
-    std::string path = "../grids/";
-    std::vector<std::string> Boards;
-    // Boards array
-    for (auto entry : std::filesystem::directory_iterator(path)) {
-        if (entry.is_directory())
-            continue;
-
-        Boards.push_back(entry.path());
-    }
-
     char solvingMethod = char(args[1][0]);
     switch (solvingMethod) {
         case 's':
@@ -45,29 +34,37 @@ int main (int argc, char* args[]) {
         break;
     }
 
+    std::string path = "../grids/";
+    std::vector<std::string> Boards;
+    for (auto entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_directory())
+            continue;
+
+        Boards.push_back(entry.path());
+    }
+
     for (std::string board : Boards) {
         Board currentBoard(path+board);
-        bool solutionNotFound = false;
+        bool solutionFound = false;
 
         start = std::chrono::high_resolution_clock::now();
 
         switch (solvingMethod) {
             case 's':
-                solutionNotFound = currentBoard.solveBoardSequential(0, 0);
+                solutionFound = currentBoard.solveBoardSequential(0, 0);
                 break;
             case 't':
-                solutionNotFound = currentBoard.solveBoardThreadPool(8);
-                std::cout << "augh";
+                solutionFound = currentBoard.solveBoardThreadPool(8);
                 break;
             case 'f':
-                solutionNotFound = currentBoard.solveBoardForLoop();
+                solutionFound = currentBoard.solveBoardForLoop();
                 break;
         }
 
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
 
-        if (solutionNotFound) {
+        if (!solutionFound) {
             std::cerr << "No solution found for " << board << std::endl;
             continue;
         }
