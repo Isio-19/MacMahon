@@ -21,36 +21,66 @@ int main (int argc, char* args[]) {
         Boards.push_back(entry.path());
     }
 
+    char solvingMethod = char(args[1][0]);
+    switch (solvingMethod) {
+        case 's':
+        case 't':
+        case 'f':
+            break;
+        
+        default:
+            std::cout << "Solving method argument not recognized" << std::endl;
+            exit(1);
+            break;
+    }
+
+    char displayMethod = char(args[2][0]);
+    switch (displayMethod) {
+    case 'i':
+    case 't':
+        break;
+    
+    default:
+        std::cout << "Display method argument not recognized" << std::endl;
+        break;
+    }
+
     for (std::string board : Boards) {
         Board currentBoard(path+board);
         bool solutionNotFound = false;
 
         start = std::chrono::high_resolution_clock::now();
 
-        if (std::string(args[1]) == "-s")
-            if (!currentBoard.solveBoardSequential(0, 0))
-                solutionNotFound = true;
-        if (std::string(args[1]) == "-t") 
-            if (!currentBoard.solveBoardThreadPool(8))
-                solutionNotFound = true;
-        if (std::string(args[1]) == "-f") 
-            if (!currentBoard.solveBoardForLoop())
-                solutionNotFound = true;
-        
+        switch (solvingMethod) {
+            case 's':
+                solutionNotFound = currentBoard.solveBoardSequential(0, 0);
+                break;
+            case 't':
+                solutionNotFound = currentBoard.solveBoardThreadPool(8);
+                std::cout << "augh";
+                break;
+            case 'f':
+                solutionNotFound = currentBoard.solveBoardForLoop();
+                break;
+        }
+
         end = std::chrono::high_resolution_clock::now();
         duration = end - start;
 
         if (solutionNotFound) {
-            std::cerr << "Not solution found for " << board << std::endl;
+            std::cerr << "No solution found for " << board << std::endl;
             continue;
         }
 
         std::cout << "Solution found for " << board << " in " << duration.count() << " milliseconds." << std::endl;
 
-        if (std::string(args[2]) == "-i")
+        switch (displayMethod) {
+        case 'i':
             currentBoard.printBoard();
-        else 
-            currentBoard.printBoardTerminal();
+            break;
+        case 't':
+            currentBoard.printBoardTerminal();        
+        }
     }
 
     return 0;
