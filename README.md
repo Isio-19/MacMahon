@@ -34,3 +34,9 @@ When launching the program, two arguments should be given:
     - Graphical User Interface (i)
   
 `./MacMahon [stf] [ti]`
+
+## Examples of solved boards
+
+![solved 6x6 board](img/6x6.png)
+
+![solved 6x4 board](img/6x4.png)
